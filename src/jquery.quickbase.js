@@ -40,14 +40,11 @@
                 if(record.fid === '' && record.name === '')
                     throw "Missing record fid or name.";
 
-                if(record.value === '')
-                    throw "Missing record value.";
-
                 var id = record.fid !== '' ? 'fid="' + record.fid + '"' : 'name="' + record.name + '"';
 
                 return '<field ' + id + '>' + record.value + '</field>';
             } catch (e) {
-                console.log(e);
+                handleErrors(e);
             }
         }
 
@@ -68,7 +65,7 @@
             this.errdetail = errdetail;
         }
 
-        function showErrors(e) {
+        function handleErrors(e) {
             console.log(e);
         }
 
@@ -103,12 +100,13 @@
                     return typeof(callback) == "function" ? callback(data) : data;
 
                   } catch (e) {
-                    showErrors(e);
+                    handleErrors(e);
                   }
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
-                  alert(xhr.status);
-                  alert(thrownError);
+                    console.log(xhr);
+                    console.log(ajaxOptions);
+                    console.log(thrownError);
                 }
             });
         }
@@ -130,6 +128,60 @@
             payload.append($('<hours>').text(hours));
 
             transmit('API_AUTHENTICATE', payload, 'main', callback);
+        }
+
+        plugin.build_schema = function(callback) {
+            transmit('API_GetSchema', plugin.payload, 'db', function(data) {
+
+                try {
+                    var $chdbids = $(data).find('chdbid');
+                    if ($chdbids.length === 0)
+                        throw 'This operation requires a parent-level DBID.';
+                }
+                catch (e) {
+                    handleErrors(e);
+                }
+
+                var schema = {};
+
+                $chdbids.each(function(index, value) {
+                    var dbid = $(value).text();
+                    var table_name = $(value).attr('name').substring('_dbid_'.length);
+
+                    schema[table_name] = {'dbid': dbid, fields: {}, queries: {}};
+
+                    plugin.settings.dbid = dbid;
+
+                    plugin.get_schema(function(data) {
+                        var $fields = $(data).find('field');
+
+                        $fields.each(function(index, value) {
+                            var field_label_raw = $(value).find('label').text()
+                            var field_label = field_label_raw.toLowerCase().replace(/\W/g, '_');
+                            var field_id = $(value).attr('id');
+                            var field_type = $(value).attr('field_type');
+
+                            var f = {};
+                            f[field_label] = {id: field_id, label: field_label_raw, 'field_type': field_type};
+                            $.extend(schema[table_name].fields, f);
+                        });
+
+                        var $queries = $(data).find('query');
+
+                        $queries.each(function(index, value) {
+                            var query_id = $(value).attr('id');
+                            var query_name_raw = $(value).find('qyname').text();
+                            var query_name = query_name_raw.toLowerCase().replace(/\W/g, '_');
+
+                            var q = {};
+                            q[query_name] = {id: query_id, name: query_name_raw};
+                            $.extend(schema[table_name].queries, q);
+                        });
+                    });
+                });
+
+                return typeof(callback) == "function" ? callback(schema) : schema;
+            });  
         }
 
         plugin.get_schema = function(callback) {
