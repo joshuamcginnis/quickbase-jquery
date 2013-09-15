@@ -52,8 +52,18 @@
 			this.errdetail = errdetail;
 		}
 
-		function handleErrors(e) {
+		function handle_errors(e) {
+			console.log(e);
 			console.log(e.message);
+		}
+
+		function add_options_to_payload(options) {
+			if(options) {
+				for(var prop in options) {
+					var opt = '<' + prop + '>';
+					plugin.payload.append($(opt).text(options[prop]));
+				}
+			}
 		}
 
 		function transmit(action, payload, url, callback) {
@@ -71,7 +81,7 @@
 				dataType: 'xml',
 				contentType: 'text/xml',
 				success: function(data, textStatus, jqXHR) {
-					var errcode = parseInt($(data).find('errcode').text());
+					var errcode = parseInt($(data).find('errcode').text()); 
 
 					try {
 						if(errcode > 0) {
@@ -86,9 +96,9 @@
 
 						return typeof(callback) == "function" ? callback(data) : data;
 
-				  } catch (e) {
-					handleErrors(e);
-				  }
+					} catch (e) {
+						handle_errors(e);
+					}
 				},
 				error: function(xhr, ajaxOptions, thrownError) {
 					console.log(xhr);
@@ -217,16 +227,12 @@
 		}
 
 		plugin.add_record = function(records, options, callback) {
-			if ( typeof(options) == "function") {
+			if ($.isFunction(options)) {
 				callback = options;
 				options = undefined;
 			}
 
-			if(options) {
-				$.each(options, function(index, value) {
-					plugin.payload.append($(value));
-				});
-			}
+			add_options_to_payload(options);
 
 			$.each(records, function(index, value) {
 				plugin.payload.append($(value));
@@ -237,10 +243,19 @@
 			});
 		}
 
-		plugin.edit_record = function(callback) {
-			// transmit('API_EditRecord', plugin.payload, 'db', function(data) {
-			//     return typeof(callback) == "function" ? callback(data) : data;
-			// });
+		plugin.delete_record = function(rid, options, callback) {
+			if ($.isFunction(options)) {
+				callback = options;
+				options = undefined;
+			}
+
+			add_options_to_payload(options);
+
+			plugin.payload.append('<rid>' + rid + '</rid>');
+
+			transmit('API_DeleteRecord', plugin.payload, 'db', function(data) {
+			    return typeof(callback) == "function" ? callback(data) : data;
+			});
 		}
 
 		plugin.do_query = function(query, options, callback) {
@@ -253,13 +268,47 @@
 
 			plugin.payload.append(q.text(query));
 
-			for (var opt in options) {
-				var opt_elem = '<' + opt + '>';
-				plugin.payload.append($(opt_elem).text(options[opt]));
+			for (var prop in options) {
+				var opt = '<' + prop + '>';
+				plugin.payload.append($(opt).text(options[prop]));
 			}
 
 			transmit('API_DoQuery', plugin.payload, 'db', function(data) {
 				return typeof(callback) == "function" ? callback(data) : data;
+			});
+		}
+
+		plugin.edit_record = function(rid, fields, options, callback) {
+			if ($.isFunction(options)) {
+				callback = options;
+				options = undefined;
+			}
+
+			add_options_to_payload(options);
+
+			plugin.payload.append('<rid>' + rid + '</rid>');
+
+			$.each(fields, function(index, value) {
+				plugin.payload.append($(value));
+			});
+
+			transmit('API_EditRecord', plugin.payload, 'db', function(data) {
+			    return typeof(callback) == "function" ? callback(data) : data;
+			});
+		}
+
+		plugin.sign_out = function(udata, callback) {
+			if ($.isFunction(udata)) {
+				callback = udata;
+				udata = undefined;
+			}
+
+			if(udata) {
+				plugin.payload.append('<udata>' + udata + '</udata>');
+			}
+
+			transmit('API_SignOut', plugin.payload, 'main', function(data) {
+			    return typeof(callback) == "function" ? callback(data) : data;
 			});
 		}
 
