@@ -1,3 +1,11 @@
+/*
+ *  jQuery QuickBase - v1.0.0
+ *  A client-size jQuery library for the Intuit QuickBase API.
+ *  https://github.com/joshuamcginnis/quickbase-jquery
+ *
+ *  Made by Joshua
+ *  Under MIT License
+ */
 (function($) {
 	$.QuickBase = function(options) {
 		var defaults = {

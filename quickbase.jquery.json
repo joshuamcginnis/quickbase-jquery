@@ -1,0 +1,37 @@
+{
+  "name": "quickbase",
+  "title": "jQuery QuickBase",
+  "description": "A client-size jQuery library for the Intuit QuickBase API.",
+  "keywords": [
+    "jquery",
+    "quickbase",
+    "plugins",
+    "intuit"
+  ],
+  "version": "1.0.0",
+  "author": {
+    "name": "Joshua",
+    "email": "joshua@mcginn.is",
+    "url": "https://github.com/joshuamcginnis"
+  },
+  "maintainers": [
+    {
+      "name": "Joshua",
+      "email": "joshua@mcginn.is",
+      "url": "https://github.com/joshuamcginnis"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://joshuamcginnis.mit-license.org/"
+    }
+  ],
+  "bugs": "https://github.com/joshuamcginnis/quickbase-jquery/issues",
+  "homepage": "https://github.com/joshuamcginnis/quickbase-jquery",
+  "docs": "https://github.com/joshuamcginnis/quickbase-jquery#readme",
+  "download": "https://github.com/joshuamcginnis/quickbase-jquery/archive/master.zip",
+  "dependencies": {
+    "jquery": ">=1.4"
+  }
+}
