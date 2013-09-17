@@ -4,7 +4,7 @@ This project provides a jQuery-friendly alternative to the official [QuickBaseCl
 
 But why? Doesn't QuickBase already have an official client?
 ----------
-The official QuickBaseClient.js, as of today, was last updated in 10/3/2013. In addition to not being actively maintained, the library was built using current javascript best-practices.
+The official QuickBaseClient.js, as of today, was last updated in 10/3/2013. In addition to not being actively maintained, the library wasn't built using current javascript best-practices.
 
 One fundamental issue that this project hopes to solve is that this plugin provides callbacks for all QuickBase API methods, providing developers with a fully asynchronous interface. With the current client, this is not supported and as a result, many QuickBase applications must set setTimeout or else the page can 'block' the user from performing specific actions while the API call returns.
 
@@ -69,7 +69,7 @@ However, you can pass the --disable-web-security flag to Chrome and it will allo
 
 **Add this to your .bash_profile**
 
-    ```html
+	```html
     alias chrome-xss='open -a Google\ Chrome --args --disable-web-security --allow-file-access-from-files'
     ```
 Launch chrome:
