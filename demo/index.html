@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>QuickBase jQuery Demo</title>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="../dist/jquery.quickbase.min.js"></script>
+<script>
+$(document).ready(function() {
+	var $qb = $.QuickBase({
+		username: '',
+		password: '',
+		dbid: '',
+		apptoken: '',
+		realm: ''
+  });
+
+	$qb.init(function() {
+
+		$qb.build_schema(function(schema) {
+			window.app = schema;
+
+			$qb.settings.dbid = app.projects.dbid; //change dbid
+
+			records = [
+			    $qb.record(app.projects.fields.name.id, 'Sample Project'),
+			    $qb.record(app.projects.fields.status.id, 'New'),
+			    $qb.record(app.projects.fields.start_date.id, '10/1/2013'),
+			    $qb.record(app.projects.fields.need_by_date.id, '10/1/2013'),
+			    $qb.record(app.projects.fields.priority.id, 'Low'),
+			    $qb.record(app.projects.fields.rating.id, 5),
+			];
+
+			$qb.add_record(records, function(response) {
+			    console.log(response);
+			});
+
+
+			$qb.edit_record(6, records, {udata: 'test'}, function(response) {
+			    console.log(response);
+			});
+
+			$qb.delete_record(6, {udata: 'test'}, function(response) {
+			    console.log(response);
+			});
+
+			qb.do_query('1', function(response) {
+			  console.log(response);
+			});
+		});
+	});
+});
+</script>
+</head>
+
+<body>
+</body>
+</html>
