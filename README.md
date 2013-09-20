@@ -67,16 +67,17 @@ Browser security limitations will normally prevent you from using this plugin ou
 
 However, you can pass the --disable-web-security flag to Chrome and it will allow you to make cross-domain requests, effectively allowing you to test and dev in a local environment.
 
-**Add this to your .bash_profile**
+**Add this to your .bash_profile
 
-	```html
-    alias chrome-xss='open -a Google\ Chrome --args --disable-web-security --allow-file-access-from-files'
-    ```
+```html
+alias chrome-xss='open -a Google\ Chrome --args --disable-web-security --allow-file-access-from-files'
+```
+
 Launch chrome:
 
-    ```javascript
-    chrome-xss
-    ```
+```javascript
+chrome-xss
+```
 
 ##Demos
 A demo of how to add/edit/query records can be found in the /demo folder of the project.
