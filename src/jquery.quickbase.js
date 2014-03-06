@@ -144,7 +144,7 @@
 					}
 				}
 				catch (e) {
-					handleErrors(e);
+					handle_errors(e);
 				}
 
 				function build_schema_obj(index) {
